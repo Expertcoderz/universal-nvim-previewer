@@ -92,7 +92,7 @@ function M.stopAllPreviews()
 		count = count + 1
 	end
 
-	print(string.format("%s preview file(s) cleaned up.", count))
+	print(string.format("%d preview file(s) cleaned up.", count))
 end
 
 function M.setup(opts)
