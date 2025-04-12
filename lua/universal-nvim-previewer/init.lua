@@ -11,13 +11,17 @@ function M.startPreview()
 
 	local processorCmd = M.processors[vim.bo.filetype](preview.TempfilePath, vim.bo.filetype)
 	if type(processorCmd) ~= "table" then
-		vim.api.nvim_err_writeln("No processor is defined for the current filetype.")
+		vim.api.nvim_echo({
+			{ "No processor is defined for the current filetype." },
+		}, false, { err = true })
 		return
 	end
 
 	local previewerCmd = M.previewers[vim.bo.filetype](preview.TempfilePath, vim.bo.filetype)
 	if type(previewerCmd) ~= "table" then
-		vim.api.nvim_err_writeln("No previewer is defined for the current filetype.")
+		vim.api.nvim_echo({
+			{ "No previewer is defined for the current filetype." },
+		}, false, { err = true })
 		return
 	end
 
@@ -40,13 +44,17 @@ function M.startPreview()
 	preview.ProcessorObj = nil
 
 	if processorResult.code ~= 0 then
-		vim.api.nvim_err_writeln("Preview processor failed or terminated.")
+		vim.api.nvim_echo({
+			{ "Preview processor failed or terminated." },
+		}, false, { err = true })
 		processorFail()
 		return
 	end
 
 	if vim.fn.filereadable(preview.TempfilePath) == 0 then
-		vim.api.nvim_err_writeln("Preview output missing or unreadable.")
+		vim.api.nvim_echo({
+			{ "Preview output missing or unreadable." },
+		}, false, { err = true })
 		processorFail()
 		return
 	end
@@ -63,7 +71,9 @@ function M.stopPreview()
 	local preview = M.previews[filename]
 
 	if not preview then
-		vim.api.nvim_err_writeln("No preview is active for this buffer.")
+		vim.api.nvim_echo({
+			{ "No preview is active for this buffer." },
+		}, false, { err = true })
 		return
 	end
 
