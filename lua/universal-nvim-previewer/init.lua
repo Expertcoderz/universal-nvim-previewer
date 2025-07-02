@@ -17,11 +17,22 @@ function M.startPreview()
 		return
 	end
 
-	local previewerCmd = M.previewers[vim.bo.filetype](preview.TempfilePath, vim.bo.filetype)
+	if #processorCmd == 0 and preview.PreviewerObj then
+		print("Preview is already active.")
+		return
+	end
+
+	local previewPath = #processorCmd == 0 and vim.api.nvim_buf_get_name(0) or preview.TempfilePath
+	local previewerCmd = M.previewers[vim.bo.filetype](previewPath, vim.bo.filetype)
 	if type(previewerCmd) ~= "table" then
 		vim.api.nvim_echo({
 			{ "No previewer is defined for the current filetype." },
 		}, false, { err = true })
+		return
+	end
+
+	if #processorCmd == 0 then
+		preview.PreviewerObj = vim.system(previewerCmd, {})
 		return
 	end
 
@@ -130,6 +141,10 @@ function M.setup(opts)
 		end,
 		["rst"] = function(outputPath, _)
 			return { "pandoc", "-f", "rst", "-t", "html", "-o", outputPath }
+		end,
+
+		["html"] = function()
+			return {}
 		end,
 
 		[""] = function(outputPath, filetype)

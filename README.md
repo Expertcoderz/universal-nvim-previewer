@@ -71,6 +71,11 @@ The default setting of the `processors` dictionary is:
         return { "pandoc", "-f", "rst", "-t", "html", "-o", outputPath }
     end,
 
+    ["html"] = function()
+        -- Skip processing; open the previewer directly on the file.
+        return {}
+    end,
+
     -- Default processor for other filetypes
     -- (If no default is set, previewing will be disabled for such filetypes.)
     [""] = function(outputPath, filetype)
